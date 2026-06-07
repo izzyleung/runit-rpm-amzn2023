@@ -20,7 +20,8 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
 Url:            http://smarden.org/runit/
 Source0:        http://smarden.org/runit/runit-%{version}.tar.gz
-Source1:        runsvdir-start.service
+Source1:        https://github.com/izzyleung/runit/archive/refs/tags/%{version}-patched.tar.gz
+Source2:        runsvdir-start.service
 
 Obsoletes: runit <= %{version}-%{release}
 Provides: runit = %{version}-%{release}
