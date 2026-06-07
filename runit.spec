@@ -1,5 +1,5 @@
 #
-# spec file for package runit (Version 2.1.2)
+# spec file for package runit (Version 2.3.1)
 #
 # Copyright (c) 2010 Ian Meyer <ianmmeyer@gmail.com>
 
@@ -7,7 +7,7 @@
 ## --with dietlibc ...  statically links against dietlibc
 
 Name:           runit
-Version:        2.1.2
+Version:        2.3.1
 Release:        1%{?_with_dietlibc:diet}%{?dist}
 
 Group:          System/Base
@@ -21,20 +21,13 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Url:            http://smarden.org/runit/
 Source0:        http://smarden.org/runit/runit-%{version}.tar.gz
 Source1:        runsvdir-start.service
-Patch:          runit-2.1.2-etc-service.patch
-Patch1:         runit-2.1.2-runsvdir-path-cleanup.patch
-Patch2:         runit-2.1.2-term-hup-option.patch
 
 Obsoletes: runit <= %{version}-%{release}
 Provides: runit = %{version}-%{release}
 
 BuildRequires: make gcc
-%if 0%{?rhel} >= 6
-BuildRequires:  glibc-static
-%endif
-%if 0%{?rhel} >= 7
+BuildRequires: glibc-static
 BuildRequires: systemd-units
-%endif
 
 %{?_with_dietlibc:BuildRequires:        dietlibc}
 
@@ -54,14 +47,11 @@ Authors:
     Gerrit Pape <pape@smarden.org>
 
 %prep
-%setup -q -n admin/%{name}-%{version}
+%setup -q -n runit-2.3.1-patched
 pushd src
 echo "%{?_with_dietlibc:diet -Os }%__cc $RPM_OPT_FLAGS" >conf-cc
 echo "%{?_with_dietlibc:diet -Os }%__cc -Os -pipe"      >conf-ld
 popd
-%patch
-%patch1
-%patch2
 
 %build
 sh package/compile
@@ -80,48 +70,17 @@ done
 %{__install} -D -m 0750 etc/2 %{buildroot}%{_sbindir}/runsvdir-start
 
 # For systemd only
-%if 0%{?rhel} >= 7
 %{__install} -D -p -m 0644 $RPM_SOURCE_DIR/runsvdir-start.service \
                        $RPM_BUILD_ROOT%{_unitdir}/runsvdir-start.service
 echo %{_unitdir}/runsvdir-start.service > %{EXTRA_FILES}
-%endif
 
 %clean
 %{__rm} -rf %{buildroot}
 
 %post
 if [ $1 = 1 ] ; then
-  %if 0%{?rhel} >= 6 <= 7
-    rpm --queryformat='%%{name}' -qf /sbin/init | grep -q upstart
-    if [ $? -eq 0 ]; then
-      cat >/etc/init/runsvdir.conf <<\EOT
-# for runit - manage /usr/sbin/runsvdir-start
-start on runlevel [2345]
-stop on runlevel [^2345]
-normal exit 0 111
-respawn
-exec /sbin/runsvdir-start
-EOT
-    # tell init to start the new service
-      start runsvdir
-    fi
-  %endif
-
-  %if 0%{?rhel} >= 7
-    systemctl enable runsvdir-start
-    systemctl start runsvdir-start
-  %endif
-
-  %if 0%{?rhel} < 6
-    grep -q 'RI:2345:respawn:/sbin/runsvdir-start' /etc/inittab
-    if [ $? -eq 1 ]; then
-      echo -n "Installing /sbin/runsvdir-start into /etc/inittab.."
-      echo "RI:2345:respawn:/sbin/runsvdir-start" >> /etc/inittab
-      echo " success."
-      # Reload init
-      telinit q
-    fi
-  %endif
+  systemctl enable runsvdir-start
+  systemctl start runsvdir-start
 fi
 
 %preun
@@ -158,11 +117,10 @@ fi
 %{_sbindir}/runsvdir
 %{_sbindir}/sv
 %{_sbindir}/svlogd
-%{_sbindir}/utmpset
 %{_sbindir}/runsvdir-start
 %{_mandir}/man8/*.8*
 %doc doc/* etc/
-%doc package/CHANGES package/COPYING package/README package/THANKS package/TODO
+%doc package/CHANGES package/COPYING package/README package/THANKS
 %dir /etc/service
 
 %changelog

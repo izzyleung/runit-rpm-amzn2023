@@ -5,6 +5,7 @@ Description=Runit Process Supervisor
 ExecStart=/usr/sbin/runsvdir-start
 Restart=always
 KillMode=process
+OOMScoreAdjust=-1000
 
 [Install]
 WantedBy=multi-user.target
