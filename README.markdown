@@ -14,3 +14,14 @@ cd ./runit-rpm
 ./build.sh
 sudo rpm -i ~/rpmbuild/RPMS/*/*.rpm
 ```
+
+## Building - from a Docker container
+```
+yum update
+yum -q -y install which wget rpmdevtools git glibc-static
+yum -q -y groupinstall "Development Tools"
+git clone https://github.com/izzyleung/runit-rpm-amzn2023 runit-rpm
+cd ./runit-rpm
+./build.sh
+sudo rpm -i ~/rpmbuild/RPMS/*/*.rpm
+```
