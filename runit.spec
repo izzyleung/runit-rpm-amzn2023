@@ -3,12 +3,9 @@
 #
 # Copyright (c) 2010 Ian Meyer <ianmmeyer@gmail.com>
 
-## This package understands the following switches:
-## --with dietlibc ...  statically links against dietlibc
-
 Name:           runit
 Version:        2.3.1
-Release:        1%{?_with_dietlibc:diet}%{?dist}
+Release:        %{release}%{?dist}
 
 Group:          System/Base
 License:        BSD
@@ -23,14 +20,11 @@ Source0:        http://smarden.org/runit/runit-%{version}.tar.gz
 Source1:        https://github.com/izzyleung/runit/archive/refs/tags/%{version}-patched.tar.gz
 Source2:        runsvdir-start.service
 
-Obsoletes: runit <= %{version}-%{release}
 Provides: runit = %{version}-%{release}
 
 BuildRequires: make gcc
 BuildRequires: glibc-static
 BuildRequires: systemd-units
-
-%{?_with_dietlibc:BuildRequires:        dietlibc}
 
 Summary:        A UNIX init scheme with service supervision
 
@@ -50,8 +44,8 @@ Authors:
 %prep
 %setup -q -n runit-%{version}-patched
 pushd src
-echo "%{?_with_dietlibc:diet -Os }%__cc $RPM_OPT_FLAGS" >conf-cc
-echo "%{?_with_dietlibc:diet -Os }%__cc -Os -pipe"      >conf-ld
+echo "%__cc $RPM_OPT_FLAGS" >conf-cc
+echo "%__cc -Os -pipe"      >conf-ld
 popd
 
 %build

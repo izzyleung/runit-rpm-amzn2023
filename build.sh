@@ -1,5 +1,7 @@
 #!/bin/sh
 
+RELEASE="${RELEASE:-1}"
+
 whereami=$(dirname $0)
 
 if [ ! -f "$(which rpmbuild)" ];         then echo "please install 'rpm-build' rpm and try again" ; exit 1 ; fi
@@ -20,4 +22,5 @@ cp -f "${whereami}/runsvdir-start.service"    "$SOURCES"
 /usr/bin/spectool -C "$SOURCES" -g "${whereami}/runit.spec "
 
 PATH=/usr/bin:/bin
-rpmbuild -bb "$SPECS/runit.spec"
+rpmbuild -bb "$SPECS/runit.spec" \
+    --define "release ${RELEASE}"
