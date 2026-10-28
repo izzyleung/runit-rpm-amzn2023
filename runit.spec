@@ -17,7 +17,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
 Url:            http://smarden.org/runit/
 Source0:        http://smarden.org/runit/runit-%{version}.tar.gz
-Source1:        https://github.com/izzyleung/runit/archive/refs/tags/%{version}-patched.tar.gz
+Source1:        https://github.com/izzyleung/runit/archive/refs/tags/%{version}-term-signal-fix.tar.gz
 Source2:        runsvdir-start.service
 
 Provides: runit = %{version}-%{release}
@@ -42,7 +42,7 @@ Authors:
     Gerrit Pape <pape@smarden.org>
 
 %prep
-%setup -q -n runit-%{version}-patched
+%setup -q -n runit-%{version}-term-signal-fix
 pushd src
 echo "%__cc $RPM_OPT_FLAGS" >conf-cc
 echo "%__cc -Os -pipe"      >conf-ld

@@ -13,7 +13,7 @@ if [ ! -f "$(which wget)" ];             then echo "please install 'wget' rpm an
 # named in ~/.rpmmacros
 /usr/bin/rpmdev-setuptree
 
-wget -O $HOME/rpmbuild/SOURCES/runit-2.3.1.tar.gz https://github.com/izzyleung/runit/archive/refs/tags/2.3.1-patched.tar.gz
+wget -O $HOME/rpmbuild/SOURCES/runit-2.3.1.tar.gz https://github.com/izzyleung/runit/archive/refs/tags/2.3.1-term-signal-fix.tar.gz
 
 SPECS=$(rpm --eval "%{_specdir}")
 SOURCES=$(rpm --eval "%{_sourcedir}")
