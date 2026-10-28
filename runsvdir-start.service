@@ -1,11 +1,13 @@
 [Unit]
 Description=Runit Process Supervisor
+After=Network.target
 
 [Service]
 ExecStart=/usr/sbin/runsvdir-start
 Restart=always
-KillMode=process
+KillMode=control-group
 OOMScoreAdjust=-1000
+SuccessExitStatus=111
 
 [Install]
 WantedBy=multi-user.target
